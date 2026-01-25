@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#export https_proxy=http://192.168.0.100:7897
+#export http_proxy=http://192.168.0.100:7897
+
+# 安装 helm
+wget https://mirrors.huaweicloud.com/helm/v3.16.3/helm-v3.16.3-linux-amd64.tar.gz
+tar -xf helm-*-linux-amd64.tar.gz
+cp linux-amd64/helm /usr/local/bin/
+
+# 下载 cilium
+helm repo add cilium https://helm.cilium.io
+helm pull cilium/cilium
+
+# 下载 coredns
+helm repo add coredns https://coredns.github.io/helm
+helm pull coredns/coredns
+
+# 下载 ingress-nginx
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm pull ingress-nginx/ingress-nginx
+
+helm repo add nvdp https://nvidia.github.io/k8s-device-plugin
+helm pull nvdp/nvidia-device-plugin --version 0.18.0
+
+# 下载 metrics-server
+# wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml -O metrics-server.yaml
