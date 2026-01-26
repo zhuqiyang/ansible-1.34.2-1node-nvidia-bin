@@ -194,42 +194,10 @@
     enabled: yes
   no_log: true
 
-- name: mkdir /root/nvidia
-  file:
-    path: /root/nvidia
-    state: directory
-    mode: 0755
-    owner: root
-    group: root
-
-- name: copy runtimeclass.yaml.j2 to /root/nvidia/1.runtimeclass.yaml
+- name: copy quick-test.yaml.j2 to /root/quick-test.yaml
   template:
-    src: runtimeclass.yaml.j2
-    dest: /root/nvidia/1.runtimeclass.yaml
-    mode: 0644
-    owner: root
-    group: root
-
-- name: copy nvidia-device-plugin-corrected.yaml.j2 to /root/nvidia/2.nvidia-device-plugin-corrected.yaml
-  template:
-    src: nvidia-device-plugin-corrected.yaml.j2
-    dest: /root/nvidia/2.nvidia-device-plugin-corrected.yaml
-    mode: 0644
-    owner: root
-    group: root
-
-- name: copy helm-nvidia-device-plugin-values.yaml.j2 to /root/helm-nvidia-device-plugin-values.yaml
-  template:
-    src: helm-nvidia-device-plugin-values.yaml.j2
-    dest: /root/helm-nvidia-device-plugin-values.yaml
-    mode: 0644
-    owner: root
-    group: root
-
-- name: copy nvidia-runtime-test.yaml.j2 to /root/nvidia/3.nvidia-runtime-test.yaml
-  template:
-    src: nvidia-runtime-test.yaml.j2
-    dest: /root/nvidia/3.nvidia-runtime-test.yaml
+    src: quick-test.yaml.j2
+    dest: /root/quick-test.yaml
     mode: 0644
     owner: root
     group: root

@@ -62,7 +62,7 @@
 - name: /usr/local/bin/etcdctl endpoint status --write-out=table
   shell: /usr/local/bin/etcdctl --endpoints='{{ etcd_hostname }}:2379' --cacert=/etc/etcd/ssl/etcd-ca.pem --cert=/etc/etcd/ssl/etcd.pem --key=/etc/etcd/ssl/etcd-key.pem endpoint status --write-out=table
   register: etcdctl_result
-  no_log: true
+  no_log: false
   run_once: true
 - name: etcdctl_result
   run_once: true
