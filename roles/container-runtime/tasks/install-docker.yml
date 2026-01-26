@@ -173,8 +173,8 @@
     name: nvidia-container-toolkit
     state: present
 
-- name: nvidia-ctk runtime configure --runtime=containerd
-  shell: nvidia-ctk runtime configure --runtime=containerd
+- name: nvidia-ctk runtime configure --runtime=docker
+  shell: nvidia-ctk runtime configure --runtime=docker
 # end nvidia-container-toolkit --------------------------------------
 
 # cdi generate --------------------------------------
