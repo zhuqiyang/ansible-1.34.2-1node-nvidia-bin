@@ -272,19 +272,18 @@
     curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
       sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
       tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-  no_log: false
 
-- name: apt-get update
-  shell: apt-get update
-  no_log: false
+- name: update apt cache
+  apt:
+    update_cache: yes
 
-- name: apt-get install -y nvidia-container-toolkit
-  shell: apt-get install -y nvidia-container-toolkit
-  no_log: false
+- name: install nvidia-container-toolkit
+  apt:
+    name: nvidia-container-toolkit
+    state: present
 
 - name: nvidia-ctk runtime configure --runtime=containerd
   shell: nvidia-ctk runtime configure --runtime=containerd
-  no_log: false
 # end nvidia-container-toolkit --------------------------------------
 
 # 重启 containerd 服务
@@ -297,16 +296,13 @@
 
 - name: nvidia-container-runtime --version
   shell: nvidia-container-runtime --version
-  no_log: false
 
 # cdi generate --------------------------------------
 - name: nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
   shell: nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
-  no_log: false
 
 - name: nvidia-ctk cdi list
   shell: nvidia-ctk cdi list
-  no_log: false
 # end cdi generate --------------------------------------
 
 - name: mkdir /root/nvidia
