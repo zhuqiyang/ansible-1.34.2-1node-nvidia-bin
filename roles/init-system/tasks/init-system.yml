@@ -172,21 +172,6 @@
   debug:
     var: ufw_status_result.stdout_lines
 
-
-- name: 关闭 ufw 防火墙
-  command: ufw disable
-  register: ufw_disable_result
-  no_log: true
-# ufw 防火墙
-- name: 查看 ufw 防火墙状态
-  command: ufw status
-  register: ufw_status_result
-  no_log: true
-- name: 打印 ufw 防火墙状态
-  debug:
-    var: ufw_status_result.stdout_lines
-
-
 # 关闭 AppArmor
 - name: 检查 AppArmor 是否已安装
   package:
