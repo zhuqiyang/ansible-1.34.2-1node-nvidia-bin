@@ -5,6 +5,7 @@ proxy_url=https://gh-proxy.org/
 k8s_version=v1.34.3
 cfssl_version=1.6.5
 cri_dockerd_version=0.3.20
+docker_version=29.2.0
 etcd_version=3.6.4
 cni_version=1.7.1
 nerdctl_version=2.2.1
@@ -38,6 +39,13 @@ if [ ! -f "${DOWNLOAD_DIR}/cri-dockerd-${cri_dockerd_version}.amd64.tgz" ]; then
         cp "${DOWNLOAD_DIR}/cridockerd/cri-dockerd" ${DOWNLOAD_DIR}/cri-dockerd
         rm "${DOWNLOAD_DIR}/cridockerd/" -rf
         #rm -rf "${DOWNLOAD_DIR}/cri-dockerd-${cri_dockerd_version}.amd64.tgz"
+    fi
+fi
+
+if [ ! -f "${DOWNLOAD_DIR}/docker-${docker_version}.tgz" ]; then
+    wget -O "${DOWNLOAD_DIR}/docker-${docker_version}.tgz" "https://download.docker.com/linux/static/stable/x86_64/docker-${docker_version}.tgz"
+    if [ ! -f "${DOWNLOAD_DIR}/docker" ]; then
+        tar -xf "${DOWNLOAD_DIR}/docker-${docker_version}.tgz" -C "${DOWNLOAD_DIR}"
     fi
 fi
 

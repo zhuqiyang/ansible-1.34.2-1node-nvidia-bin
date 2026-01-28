@@ -37,10 +37,18 @@
   ignore_errors: true
 
 # 安装docker
-- name: 安装docker
-  shell: apt install docker.io -y
-  when: "'docker not installed' in docker_check_result.stdout"
-  no_log: true
+# - name: 安装docker
+#   shell: apt install docker.io -y
+#   when: "'docker not installed' in docker_check_result.stdout"
+#   no_log: true
+
+- name: 复制docker到/usr/local/bin/
+  copy:
+    src: "{{ playbook_dir | dirname }}/files/download/docker/*"
+    dest: /usr/local/bin/
+    mode: 0755
+    owner: root
+    group: root
 
 # 创建docker数据目录
 - name: mkdir "{{ docker_data_root }}" -pv
