@@ -1,8 +1,8 @@
 {
-  {% if docker_data_root is defined %}
-  "data-root": "{{ docker_data_root }}",
-  {% endif %}
-  "exec-opts": ["native.cgroupdriver=systemd"],
+{% if docker_data_root is defined %}
+"data-root": "{{ docker_data_root }}",
+{% endif %}
+"exec-opts": ["native.cgroupdriver=systemd"],
   "registry-mirrors": [
     "https://docker.m.daocloud.io",
     "https://docker.nju.edu.cn",

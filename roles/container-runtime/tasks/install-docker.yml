@@ -30,79 +30,15 @@
     owner: root
     group: root
 
-# 检查docker是否安装
-- name: 检查docker是否安装
-  shell: if [ -f /usr/bin/docker ]; then echo 'docker installed'; else echo 'docker not installed'; fi
-  register: docker_check_result
-  ignore_errors: true
 
-# 安装docker
-# - name: 安装docker
-#   shell: apt install docker.io -y
-#   when: "'docker not installed' in docker_check_result.stdout"
-#   no_log: true
-
-- name: 复制docker到/usr/local/bin/
+- name: 复制 docker 到 /usr/local/bin/
   copy:
     src: "{{ playbook_dir | dirname }}/files/download/docker/*"
     dest: /usr/local/bin/
     mode: 0755
     owner: root
     group: root
-
-# 创建docker数据目录
-- name: mkdir "{{ docker_data_root }}" -pv
-  file:
-    path: "{{ docker_data_root }}"
-    state: directory
-  when: docker_data_root is defined and docker_data_root | length > 0
-
-# 复制daemon.json.j2到/etc/docker/daemon.json
-- name: copy daemon.json.j2 to /etc/docker/daemon.json
-  template:
-    src: daemon.json.j2
-    dest: /etc/docker/daemon.json
-    mode: 0644
-    owner: root
-    group: root
-
-- name: copy docker.socket to /usr/lib/systemd/system/docker.socket
-  template:
-    src: docker.socket.j2
-    dest: /usr/lib/systemd/system/docker.socket
-    mode: 0644
-    owner: root
-    group: root
-
-# 开机启动docker
-- name: 开机启动docker
-  systemd:
-    name: docker
-    state: started
-    enabled: yes
-  no_log: true
-
-# systemctl status docker.service
-- name: systemctl status docker.service -n0
-  shell: systemctl status docker.service -n0
-  register: docker_status_result
-  no_log: true
-- name: 打印docker状态
-  debug:
-    var: docker_status_result.stdout_lines
-
-# docker info
-- name: docker info
-  shell: docker info
-  register: docker_info_result
-  no_log: true
-# 打印docker info
-- name: 打印docker info
-  debug:
-    var: docker_info_result.stdout_lines
-
-# 复制cri-dockerd到/usr/local/bin/
-- name: 复制cri-dockerd到/usr/local/bin/
+- name: 复制 cri-dockerd 到 /usr/local/bin/
   copy:
     src: "{{ playbook_dir | dirname }}/files/download/cri-dockerd"
     dest: /usr/local/bin/cri-dockerd
@@ -110,21 +46,58 @@
     owner: root
     group: root
 
-- name: copy cri-docker.service.j2 to /usr/lib/systemd/system/cri-docker.service
+
+- name: mkdir "{{ docker_data_root }}" -pv
+  file:
+    path: "{{ docker_data_root }}"
+    state: directory
+  when: docker_data_root is defined and docker_data_root | length > 0
+
+- name: copy docker/daemon.json.j2 to /etc/docker/daemon.json
   template:
-    src: cri-docker.service.j2
-    dest: /usr/lib/systemd/system/cri-docker.service
+    src: docker/daemon.json.j2
+    dest: /etc/docker/daemon.json
     mode: 0644
     owner: root
     group: root
 
-- name: copy cri-docker.socket.j2 to /usr/lib/systemd/system/cri-docker.socket
+
+- name: copy docker/containerd.service.j2 to /usr/lib/systemd/system/containerd.service
   template:
-    src: cri-docker.socket.j2
+    src: docker/containerd.service.j2
+    dest: /usr/lib/systemd/system/containerd.service
+    mode: 0644
+    owner: root
+    group: root
+- name: copy docker/docker.service.j2 to /usr/lib/systemd/system/docker.service
+  template:
+    src: docker/docker.service.j2
+    dest: /usr/lib/systemd/system/docker.service
+    mode: 0644
+    owner: root
+    group: root
+- name: copy docker/docker.socket.j2 to /usr/lib/systemd/system/docker.socket
+  template:
+    src: docker/docker.socket.j2
+    dest: /usr/lib/systemd/system/docker.socket
+    mode: 0644
+    owner: root
+    group: root
+- name: copy docker/cri-docker.service.j2 to /usr/lib/systemd/system/cri-docker.service
+  template:
+    src: docker/cri-docker.service.j2
+    dest: /usr/lib/systemd/system/cri-docker.service
+    mode: 0644
+    owner: root
+    group: root
+- name: copy docker/cri-docker.socket.j2 to /usr/lib/systemd/system/cri-docker.socket
+  template:
+    src: docker/cri-docker.socket.j2
     dest: /usr/lib/systemd/system/cri-docker.socket
     mode: 0644
     owner: root
     group: root
+
 
 - name: mkdir /etc/systemd/system/docker.service.d/
   file:
@@ -133,7 +106,6 @@
     mode: 0755
     owner: root
     group: root
-
 - name: copy proxy.conf.j2 to /etc/systemd/system/docker.service.d/proxy.conf
   template:
     src: proxy.conf.j2
@@ -143,17 +115,26 @@
     group: root
   when: proxy_enabled is defined and proxy_enabled == true
 
-# systemctl status cri-docker.socket
+
+- name: systemctl enable --now containerd.service
+  shell: systemctl enable --now containerd.service
+- name: systemctl enable --now docker.service
+  shell: systemctl enable --now docker.service
+- name: systemctl enable --now docker.socket
+  shell: systemctl enable --now docker.socket
+- name: systemctl enable --now cri-docker.service
+  shell: systemctl enable --now cri-docker.service
 - name: systemctl enable --now cri-docker.socket
   shell: systemctl enable --now cri-docker.socket
 
-# 开机启动cri-docker
-- name: 开机启动cri-docker
-  systemd:
-    name: cri-docker
-    state: started
-    enabled: yes
+
+- name: docker info
+  shell: docker info
+  register: docker_info_result
   no_log: true
+- name: 打印 docker info
+  debug:
+    var: docker_info_result.stdout_lines
 
 
 # 安装 nvidia-container-toolkit --------------------------------------
