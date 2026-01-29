@@ -31,9 +31,9 @@
     group: root
 
 
-- name: 复制 docker 到 /usr/local/bin/
+- name: 复制 docker 目录下的所有文件到 /usr/local/bin/
   copy:
-    src: "{{ playbook_dir | dirname }}/files/download/docker/*"
+    src: "{{ playbook_dir | dirname }}/files/download/docker/"
     dest: /usr/local/bin/
     mode: 0755
     owner: root
@@ -53,6 +53,13 @@
     state: directory
   when: docker_data_root is defined and docker_data_root | length > 0
 
+- name: mkdir /etc/docker
+  file:
+    path: /etc/docker
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
 - name: copy docker/daemon.json.j2 to /etc/docker/daemon.json
   template:
     src: docker/daemon.json.j2
@@ -116,12 +123,19 @@
   when: proxy_enabled is defined and proxy_enabled == true
 
 
+- name: groupadd docker
+  group:
+    name: docker
+    state: present
+
+- name: systemctl daemon-reload
+  shell: systemctl daemon-reload
 - name: systemctl enable --now containerd.service
   shell: systemctl enable --now containerd.service
-- name: systemctl enable --now docker.service
-  shell: systemctl enable --now docker.service
 - name: systemctl enable --now docker.socket
   shell: systemctl enable --now docker.socket
+- name: systemctl enable --now docker.service
+  shell: systemctl enable --now docker.service
 - name: systemctl enable --now cri-docker.service
   shell: systemctl enable --now cri-docker.service
 - name: systemctl enable --now cri-docker.socket
