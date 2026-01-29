@@ -136,10 +136,10 @@
   shell: systemctl enable --now docker.socket
 - name: systemctl enable --now docker.service
   shell: systemctl enable --now docker.service
-- name: systemctl enable --now cri-docker.service
-  shell: systemctl enable --now cri-docker.service
 - name: systemctl enable --now cri-docker.socket
   shell: systemctl enable --now cri-docker.socket
+- name: systemctl enable --now cri-docker.service
+  shell: systemctl enable --now cri-docker.service
 
 
 - name: docker info
